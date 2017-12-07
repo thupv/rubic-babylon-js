@@ -1,7 +1,7 @@
 var canvas, engine, scene;
 var cube = [];
 
-function createUI(){
+function createUI() {
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
     var panel = new BABYLON.GUI.StackPanel();
@@ -15,10 +15,10 @@ function createUI(){
     button1.color = "white";
     button1.cornerRadius = 20;
     button1.background = "green";
-    button1.onPointerUpObservable.add(function() {
+    button1.onPointerUpObservable.add(function () {
         for (var i = 0; i < 3; i++) {
             for (var j = 0; j < 3; j++) {
-                rotate(cube[0][i][j], Math.PI / 2, 'x');
+                rotate(cube[0][i][j], -Math.PI / 2, 'x');
             }
         }
         cube = _rotateArray(cube, 0, 'x');
@@ -31,31 +31,31 @@ function createUI(){
     button2.color = "white";
     button2.cornerRadius = 20;
     button2.background = "green";
-    button2.onPointerUpObservable.add(function() {
+    button2.onPointerUpObservable.add(function () {
         for (var i = 0; i < 3; i++) {
             for (var j = 0; j < 3; j++) {
-                rotate(cube[i][2][j], Math.PI / 2, 'y');
+                rotate(cube[i][2][j], -Math.PI / 2, 'y');
             }
         }
         cube = _rotateArray(cube, 2, 'y');
     });
     panel.addControl(button2);
 
-    var button2 = BABYLON.GUI.Button.CreateSimpleButton("but1", "RotateZ");
-    button2.width = 0.2;
-    button2.height = "40px";
-    button2.color = "white";
-    button2.cornerRadius = 20;
-    button2.background = "green";
-    button2.onPointerUpObservable.add(function() {
+    var button3 = BABYLON.GUI.Button.CreateSimpleButton("but1", "RotateZ");
+    button3.width = 0.2;
+    button3.height = "40px";
+    button3.color = "white";
+    button3.cornerRadius = 20;
+    button3.background = "green";
+    button3.onPointerUpObservable.add(function () {
         for (var i = 0; i < 3; i++) {
             for (var j = 0; j < 3; j++) {
-                rotate(cube[i][j][0], Math.PI / 2, 'z');
+                rotate(cube[i][j][0], -Math.PI / 2, 'z');
             }
         }
         cube = _rotateArray(cube, 0, 'z');
     });
-    panel.addControl(button2);
+    panel.addControl(button3);
 }
 
 if (BABYLON.Engine.isSupported()) {
@@ -76,8 +76,6 @@ if (BABYLON.Engine.isSupported()) {
                     }
                 }
             }
-
-            // newScene.debugLayer.show();
 
             engine.runRenderLoop(function () {
                 newScene.render();
@@ -149,23 +147,32 @@ var _rotateAroundX = function (object, angle, reverseRotation) {
 
     object.animations.push(animationPosition);
 
+    object.rotate(BABYLON.Axis.X, angle, BABYLON.Space.WORLD);
+    var lastRotationQuaternion = object.rotationQuaternion.clone();
+    object.rotate(BABYLON.Axis.X, -angle, BABYLON.Space.WORLD);
+
+    animationKeys = [{
+        frame: 0,
+        value: object.rotationQuaternion
+    }, {
+        frame: 100,
+        value: lastRotationQuaternion
+    }
+    ];
+
+
     var animationRotation = new BABYLON.Animation(
-        "animationRotationX",
-        "rotation.x",
+        "animationRotation",
+        "rotationQuaternion",
         speed,
-        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+        BABYLON.Animation.ANIMATIONTYPE_QUATERNION,
         BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
     );
-
-    animationKeys = [
-        {frame: 0, value: (object.rotation.x)},
-        {frame: 100, value: (object.rotation.x + angle)}
-    ];
     animationRotation.setKeys(animationKeys);
-
     object.animations.push(animationRotation);
 
     scene.beginAnimation(object, 0, 100, false);
+
 };
 
 var _rotateAroundY = function (object, angle, reverseRotation) {
@@ -205,27 +212,34 @@ var _rotateAroundY = function (object, angle, reverseRotation) {
         });
     }
     animationPosition.setKeys(animationKeys);
-
     object.animations.push(animationPosition);
 
+    object.rotate(BABYLON.Axis.Y, -angle, BABYLON.Space.WORLD);
+    var lastRotationQuaternion = object.rotationQuaternion.clone();
+    object.rotate(BABYLON.Axis.Y, angle, BABYLON.Space.WORLD);
+
+    animationKeys = [{
+            frame: 0,
+            value: object.rotationQuaternion
+        }, {
+            frame: 100,
+            value: lastRotationQuaternion
+        }
+    ];
+
+
     var animationRotation = new BABYLON.Animation(
-        "animationRotationY",
-        "rotation.y",
+        "animationRotation",
+        "rotationQuaternion",
         speed,
-        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+        BABYLON.Animation.ANIMATIONTYPE_QUATERNION,
         BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
     );
-    animationKeys = [
-        {frame: 0, value: (object.rotation.y)},
-        {frame: 100, value: (object.rotation.y - angle)}
-    ];
     animationRotation.setKeys(animationKeys);
-
     object.animations.push(animationRotation);
+    scene.beginAnimation(object, 0, 100, false);
 
-    scene.beginAnimation(object, 0, 100, false, 1, function () {
 
-    });
 };
 
 var _rotateAroundZ = function (object, angle, reverseRotation) {
@@ -267,22 +281,32 @@ var _rotateAroundZ = function (object, angle, reverseRotation) {
 
     object.animations.push(animationPosition);
 
+    object.rotate(BABYLON.Axis.Z, -angle, BABYLON.Space.WORLD);
+    var lastRotationQuaternion = object.rotationQuaternion.clone();
+    object.rotate(BABYLON.Axis.Z, angle, BABYLON.Space.WORLD);
+
+    animationKeys = [{
+        frame: 0,
+        value: object.rotationQuaternion
+    }, {
+        frame: 100,
+        value: lastRotationQuaternion
+    }
+    ];
+
+
     var animationRotation = new BABYLON.Animation(
-        "animationRotationZ",
-        "rotation.z",
+        "animationRotation",
+        "rotationQuaternion",
         speed,
-        BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+        BABYLON.Animation.ANIMATIONTYPE_QUATERNION,
         BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
     );
-    animationKeys = [
-        {frame: 0, value: (object.rotation.z)},
-        {frame: 100, value: (object.rotation.z - angle)}
-    ];
     animationRotation.setKeys(animationKeys);
-
     object.animations.push(animationRotation);
 
     scene.beginAnimation(object, 0, 100, false, 1, function () {
+
     });
 };
 
@@ -290,12 +314,12 @@ var _rotateAroundZ = function (object, angle, reverseRotation) {
 var _rotateArray = function (arr, fixedPos, _dimension) {
     var dimension = _dimension || 'x';
     var rotArr = [];
-    switch (dimension){
+    switch (dimension) {
         case 'x':
             for (var i = 0; i < 3; i++) {
                 rotArr[i] = [];
                 for (var j = 0; j < 3; j++) {
-                    rotArr[i][j] = arr[fixedPos][j][2-i];
+                    rotArr[i][j] = arr[fixedPos][2 - j][i];
                 }
             }
             for (var i = 0; i < 3; i++) {
@@ -308,7 +332,7 @@ var _rotateArray = function (arr, fixedPos, _dimension) {
             for (var i = 0; i < 3; i++) {
                 rotArr[i] = [];
                 for (var j = 0; j < 3; j++) {
-                    rotArr[i][j] = arr[j][fixedPos][2-i];
+                    rotArr[i][j] = arr[2 - j][fixedPos][i];
                 }
             }
             for (var i = 0; i < 3; i++) {
@@ -321,7 +345,7 @@ var _rotateArray = function (arr, fixedPos, _dimension) {
             for (var i = 0; i < 3; i++) {
                 rotArr[i] = [];
                 for (var j = 0; j < 3; j++) {
-                    rotArr[i][j] = arr[j][2-i][fixedPos];
+                    rotArr[i][j] = arr[j][2 - i][fixedPos];
                 }
             }
             for (var i = 0; i < 3; i++) {
