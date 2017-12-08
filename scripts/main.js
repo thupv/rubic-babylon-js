@@ -1,6 +1,8 @@
 var canvas, engine, scene;
 var cube = [];
-speed = 200;
+var speed = 400;
+var disableButton = false;
+var SPINNING_TIME = 500;
 
 function createUI() {
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -17,12 +19,19 @@ function createUI() {
     button1.cornerRadius = 20;
     button1.background = "green";
     button1.onPointerUpObservable.add(function () {
-        for (var i = 0; i < 3; i++) {
-            for (var j = 0; j < 3; j++) {
-                rotate(cube[0][i][j], -Math.PI / 2, 'x');
+        if (!disableButton) {
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[0][i][j], -Math.PI / 2, 'x');
+                }
             }
+            cube = _rotateArray(cube, 0, 'x');
+            disableButton = true;
+            setTimeout(function(){
+                disableButton = false;
+            }, SPINNING_TIME)
         }
-        cube = _rotateArray(cube, 0, 'x');
+
     });
     panel.addControl(button1);
 
@@ -33,12 +42,18 @@ function createUI() {
     button2.cornerRadius = 20;
     button2.background = "green";
     button2.onPointerUpObservable.add(function () {
-        for (var i = 0; i < 3; i++) {
-            for (var j = 0; j < 3; j++) {
-                rotate(cube[i][2][j], -Math.PI / 2, 'y');
+        if (!disableButton) {
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[i][2][j], -Math.PI / 2, 'y');
+                }
             }
+            cube = _rotateArray(cube, 2, 'y');
+            disableButton = true;
+            setTimeout(function(){
+                disableButton = false;
+            }, SPINNING_TIME)
         }
-        cube = _rotateArray(cube, 2, 'y');
     });
     panel.addControl(button2);
 
@@ -49,12 +64,19 @@ function createUI() {
     button3.cornerRadius = 20;
     button3.background = "green";
     button3.onPointerUpObservable.add(function () {
-        for (var i = 0; i < 3; i++) {
-            for (var j = 0; j < 3; j++) {
-                rotate(cube[i][j][0], -Math.PI / 2, 'z');
+        if (!disableButton) {
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[i][j][0], -Math.PI / 2, 'z');
+                }
             }
+            cube = _rotateArray(cube, 0, 'z');
+            disableButton = true;
+            setTimeout(function(){
+                disableButton = false;
+            }, SPINNING_TIME)
         }
-        cube = _rotateArray(cube, 0, 'z');
+
     });
     panel.addControl(button3);
 
@@ -65,14 +87,17 @@ function createUI() {
     button4.cornerRadius = 20;
     button4.background = "green";
     button4.onPointerUpObservable.add(function () {
-        randomRotate();
+        if(!disableButton){
+            randomRotate();
+            disableButton = true;
+        }
     });
     panel.addControl(button4);
 }
 
 function randomRotate() {
-    var rand = Math.floor(Math.random()*9);
-    switch(rand){
+    var rand = Math.floor(Math.random() * 9);
+    switch (rand) {
         case 0:
             for (var i = 0; i < 3; i++) {
                 for (var j = 0; j < 3; j++) {
@@ -147,7 +172,7 @@ function randomRotate() {
             break;
     }
 
-    setTimeout(function(){
+    setTimeout(function () {
         randomRotate();
     }, 1000);
 }
