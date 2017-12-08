@@ -177,36 +177,38 @@ function randomRotate() {
     }, 1000);
 }
 
-if (BABYLON.Engine.isSupported()) {
-    canvas = document.getElementById("renderCanvas");
-    engine = new BABYLON.Engine(canvas, true);
+function bootstrap(){
+    if (BABYLON.Engine.isSupported()) {
+        canvas = document.getElementById("renderCanvas");
+        engine = new BABYLON.Engine(canvas, true);
 
-    BABYLON.SceneLoader.Load("", "scenes/main.babylon", engine, function (newScene) {
-        scene = newScene;
-        newScene.executeWhenReady(function () {
+        BABYLON.SceneLoader.Load("", "scenes/main.babylon", engine, function (newScene) {
+            scene = newScene;
+            newScene.executeWhenReady(function () {
 
-            createUI();
-            for (var i = 0; i < 3; i++) {
-                cube[i] = [];
-                for (var j = 0; j < 3; j++) {
-                    cube[i][j] = [];
-                    for (var k = 0; k < 3; k++) {
-                        cube[i][j][k] = newScene.getMeshByName(i + ',' + j + ',' + k);
+                createUI();
+                for (var i = 0; i < 3; i++) {
+                    cube[i] = [];
+                    for (var j = 0; j < 3; j++) {
+                        cube[i][j] = [];
+                        for (var k = 0; k < 3; k++) {
+                            cube[i][j][k] = newScene.getMeshByName(i + ',' + j + ',' + k);
+                        }
                     }
                 }
-            }
 
-            engine.runRenderLoop(function () {
-                newScene.render();
+                engine.runRenderLoop(function () {
+                    newScene.render();
+                });
+
+            });
+            window.addEventListener('resize', function () {
+                engine.resize();
             });
 
+        }, function (progress) {
         });
-        window.addEventListener('resize', function () {
-            engine.resize();
-        });
-
-    }, function (progress) {
-    });
+    }
 }
 
 function rotate(object, angle, _dimension) {
@@ -475,3 +477,5 @@ var _rotateArray = function (arr, fixedPos, _dimension) {
 
     return arr;
 };
+
+bootstrap();
