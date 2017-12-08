@@ -1,5 +1,6 @@
 var canvas, engine, scene;
 var cube = [];
+speed = 200;
 
 function createUI() {
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -56,6 +57,99 @@ function createUI() {
         cube = _rotateArray(cube, 0, 'z');
     });
     panel.addControl(button3);
+
+    var button4 = BABYLON.GUI.Button.CreateSimpleButton("but1", "Spin");
+    button4.width = 0.2;
+    button4.height = "40px";
+    button4.color = "white";
+    button4.cornerRadius = 20;
+    button4.background = "green";
+    button4.onPointerUpObservable.add(function () {
+        randomRotate();
+    });
+    panel.addControl(button4);
+}
+
+function randomRotate() {
+    var rand = Math.floor(Math.random()*9);
+    switch(rand){
+        case 0:
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[0][i][j], -Math.PI / 2, 'x');
+                }
+            }
+            cube = _rotateArray(cube, 0, 'x');
+            break;
+        case 1:
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[1][i][j], -Math.PI / 2, 'x');
+                }
+            }
+            cube = _rotateArray(cube, 1, 'x');
+            break;
+        case 2:
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[2][i][j], -Math.PI / 2, 'x');
+                }
+            }
+            cube = _rotateArray(cube, 2, 'x');
+            break;
+        case 3:
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[i][0][j], -Math.PI / 2, 'y');
+                }
+            }
+            cube = _rotateArray(cube, 0, 'y');
+            break;
+        case 4:
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[i][1][j], -Math.PI / 2, 'y');
+                }
+            }
+            cube = _rotateArray(cube, 1, 'y');
+            break;
+        case 5:
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[i][2][j], -Math.PI / 2, 'y');
+                }
+            }
+            cube = _rotateArray(cube, 2, 'y');
+            break;
+        case 6:
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[i][j][0], -Math.PI / 2, 'z');
+                }
+            }
+            cube = _rotateArray(cube, 0, 'z');
+            break;
+        case 7:
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[i][j][1], -Math.PI / 2, 'z');
+                }
+            }
+            cube = _rotateArray(cube, 1, 'z');
+            break;
+        case 8:
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    rotate(cube[i][j][2], -Math.PI / 2, 'z');
+                }
+            }
+            cube = _rotateArray(cube, 2, 'z');
+            break;
+    }
+
+    setTimeout(function(){
+        randomRotate();
+    }, 1000);
 }
 
 if (BABYLON.Engine.isSupported()) {
@@ -89,7 +183,6 @@ if (BABYLON.Engine.isSupported()) {
     }, function (progress) {
     });
 }
-speed = 200;
 
 function rotate(object, angle, _dimension) {
     var dimension = _dimension || 'x';
@@ -219,12 +312,12 @@ var _rotateAroundY = function (object, angle, reverseRotation) {
     object.rotate(BABYLON.Axis.Y, angle, BABYLON.Space.WORLD);
 
     animationKeys = [{
-            frame: 0,
-            value: object.rotationQuaternion
-        }, {
-            frame: 100,
-            value: lastRotationQuaternion
-        }
+        frame: 0,
+        value: object.rotationQuaternion
+    }, {
+        frame: 100,
+        value: lastRotationQuaternion
+    }
     ];
 
 
@@ -309,7 +402,6 @@ var _rotateAroundZ = function (object, angle, reverseRotation) {
 
     });
 };
-
 
 var _rotateArray = function (arr, fixedPos, _dimension) {
     var dimension = _dimension || 'x';
