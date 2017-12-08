@@ -28,7 +28,7 @@
     -0.9
   ],
   "physicsEngine": "cannon",
-  "physicsEnabled": true,
+  "physicsEnabled": false,
   "physicsGravity": null,
   "cameras": [
     {
