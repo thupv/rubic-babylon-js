@@ -1,9 +1,10 @@
 var canvas, engine, scene;
 var cube = [];
-var speed = 400;
+var speed = 500;
 var disableButton = false;
 var SPINNING_TIME = 500;
-
+var input = [];
+var stoppable = false;
 function createUI() {
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
@@ -27,7 +28,7 @@ function createUI() {
             }
             cube = _rotateArray(cube, 0, 'x');
             disableButton = true;
-            setTimeout(function(){
+            setTimeout(function () {
                 disableButton = false;
             }, SPINNING_TIME)
         }
@@ -50,7 +51,7 @@ function createUI() {
             }
             cube = _rotateArray(cube, 2, 'y');
             disableButton = true;
-            setTimeout(function(){
+            setTimeout(function () {
                 disableButton = false;
             }, SPINNING_TIME)
         }
@@ -72,7 +73,7 @@ function createUI() {
             }
             cube = _rotateArray(cube, 0, 'z');
             disableButton = true;
-            setTimeout(function(){
+            setTimeout(function () {
                 disableButton = false;
             }, SPINNING_TIME)
         }
@@ -87,12 +88,77 @@ function createUI() {
     button4.cornerRadius = 20;
     button4.background = "green";
     button4.onPointerUpObservable.add(function () {
-        if(!disableButton){
-            randomRotate();
+        if (!disableButton) {
             disableButton = true;
+            spin();
         }
     });
     panel.addControl(button4);
+
+    input[0] = new BABYLON.GUI.InputText();
+    input[0].width = 0.32;
+    input[0].maxWidth = 0.2;
+    input[0].height = "40px";
+    input[0].text = "1,1,1,2,2,2,3,3,3";
+    input[0].color = "white";
+    input[0].background = "gray";
+    panel.addControl(input[0]);
+
+    input[1] = new BABYLON.GUI.InputText();
+    input[1].width = 0.32;
+    input[1].maxWidth = 0.2;
+    input[1].height = "40px";
+    input[1].text = "1,1,1,2,2,2,3,3,3";
+    input[1].color = "white";
+    input[1].background = "gray";
+    panel.addControl(input[1]);
+
+    input[2] = new BABYLON.GUI.InputText();
+    input[2].width = 0.32;
+    input[2].maxWidth = 0.2;
+    input[2].height = "40px";
+    input[2].text = "1,1,1,2,2,2,3,3,3";
+    input[2].color = "white";
+    input[2].background = "gray";
+    panel.addControl(input[2]);
+
+    input[3] = new BABYLON.GUI.InputText();
+    input[3].width = 0.32;
+    input[3].maxWidth = 0.2;
+    input[3].height = "40px";
+    input[3].text = "1,1,1,2,2,2,3,3,3";
+    input[3].color = "white";
+    input[3].background = "gray";
+    panel.addControl(input[3]);
+
+    input[4] = new BABYLON.GUI.InputText();
+    input[4].width = 0.32;
+    input[4].maxWidth = 0.2;
+    input[4].height = "40px";
+    input[4].text = "1,1,1,2,2,2,3,3,3";
+    input[4].color = "white";
+    input[4].background = "gray";
+    panel.addControl(input[4]);
+
+    input[5] = new BABYLON.GUI.InputText();
+    input[5].width = 0.32;
+    input[5].maxWidth = 0.2;
+    input[5].height = "40px";
+    input[5].text = "1,1,1,2,2,2,3,3,3";
+    input[5].color = "white";
+    input[5].background = "gray";
+    panel.addControl(input[5]);
+
+    var button5 = BABYLON.GUI.Button.CreateSimpleButton("but5", "Stop");
+    button5.width = 0.2;
+    button5.height = "40px";
+    button5.color = "white";
+    button5.cornerRadius = 20;
+    button5.background = "green";
+    button5.onPointerUpObservable.add(function () {
+        stop();
+    });
+    panel.addControl(button5);
 }
 
 function randomRotate() {
@@ -171,13 +237,9 @@ function randomRotate() {
             cube = _rotateArray(cube, 2, 'z');
             break;
     }
-
-    setTimeout(function () {
-        randomRotate();
-    }, 1000);
 }
 
-function bootstrap(){
+function bootstrap() {
     if (BABYLON.Engine.isSupported()) {
         canvas = document.getElementById("renderCanvas");
         engine = new BABYLON.Engine(canvas, true);
@@ -227,6 +289,48 @@ function rotate(object, angle, _dimension) {
 
     }
 }
+
+function spin() {
+    stoppable = false;
+    for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+            for (var k = 0; k < 3; k++) {
+                _changePlaneColor(cube[i][j][k], BABYLON.Color3.Gray())
+            }
+        }
+    }
+
+    var spinInterval = setInterval(function(){
+        if(stoppable){
+            clearInterval(spinInterval);
+            disableButton = false;
+            return;
+        }
+        randomRotate();
+    }, 1000);
+}
+
+function stop() {
+    stoppable = true;
+    // for (var i = 0; i < 3; i++) {
+    //     for (var j = 0; j < 3; j++) {
+    //         for (var k = 0; k < 3; k++) {
+    //             _changePlaneColor(cube[i][j][k], BABYLON.Color3.Gray())
+    //         }
+    //     }
+    // }
+}
+
+var _changePlaneColor = function (object, color) {
+    var planes = object.getChildren();
+    for (var i = 0; i < planes.length; i++) {
+        if(planes[i].name === 'Plane'){
+            planes[i].material.diffuseColor = color;
+        }
+
+    }
+
+};
 
 var _rotateAroundX = function (object, angle, reverseRotation) {
     object.animations = [];
